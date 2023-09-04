@@ -18,9 +18,10 @@ export default function App() {
       <NavigationContainer>
 
       <Stack.Navigator>       
-        <Stack.Screen name="Login Page" component={Login} /> 
-        <Stack.Screen name="Register Page" component={Register} />      
-      
+      <Stack.Screen name="Login Page" component={Login} /> 
+      <Stack.Screen  name="You Chat" component={Chat} options={{title:"You Chat", headerBackVisible: false}} />
+      <Stack.Screen  name="Register Page" component={Register} />      
+       
       </Stack.Navigator>
 
     </NavigationContainer>

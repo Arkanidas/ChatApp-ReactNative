@@ -1,15 +1,65 @@
- import React, { Component, useCallback, useState,  } from 'react'
- import { SafeAreaView, StyleSheet, Text, View,  Button, Alert,ImageBackground, TouchableOpacity, TextInput,} from 'react-native';
+ import React, { useCallback, useState, useEffect  } from 'react'
+ import { SafeAreaView, StyleSheet, Text, View,  Button,ImageBackground, TouchableOpacity, TextInput,} from 'react-native';
  import { useFonts } from 'expo-font';
  import * as SplashScreen from 'expo-splash-screen';
+ import AsyncStorage from '@react-native-async-storage/async-storage';
+ import Chat from './Chat'
 
 
  SplashScreen.preventAutoHideAsync();
 
- export default function Login({navigation}) {
+ export default function Login({navigation, route}) {
 
+const [MessageVisible, setMessageVisible] = useState(true);
+const [LoginResponseData, setLoginResponseData] = useState({});
 const [username, setusername] = useState('');
 const [password, setpassword] = useState('');
+const [isloggedin, setisloggedin] = useState(null);
+const [accesstoken,setaccesstoken] = useState(null);
+const [userid, setuserid] = useState(null);
+
+const LoginFetch =  "https://chat-api-with-auth.up.railway.app/auth/token";
+
+useEffect(() => {
+  fetchDataLogin();
+
+  if (route.params?.message) {
+    setMessageVisible(true);
+    const timeout = setTimeout(() => {
+      setMessageVisible(false);
+    }, 5000);
+    return () => clearTimeout(timeout);
+  }
+}, [route.params?.message]);
+
+
+
+
+const fetchDataLogin = async () => {
+
+  try{
+  
+  const responseLogin = await fetch(LoginFetch, {
+  method:'POST',
+  
+  headers:{
+    'Content-Type':'application/json',
+  },
+  
+  body: JSON.stringify({
+  username: username,
+  password: password,
+  }),
+  
+  });
+  
+  const LoginData = await responseLogin.json();
+  setLoginResponseData(LoginData);
+  
+  } catch(error){
+    console.log("something went wrong, Please try again");
+  }}
+  
 
 
   const [fontsLoaded] = useFonts({
@@ -27,6 +77,41 @@ const [password, setpassword] = useState('');
     return null;
   }
 
+  
+const handlelogin = async () =>{
+  fetchDataLogin();
+
+if(LoginResponseData.data && LoginResponseData.data.accessToken){
+  setisloggedin(true);
+  setaccesstoken(LoginResponseData.data.accessToken);
+  setuserid(LoginResponseData.data._id)
+  navigation.navigate('You Chat');
+
+
+try {
+  const userData = JSON.stringify({
+    accessToken: LoginResponseData.data.accessToken,
+    userId: LoginResponseData.data._id,
+  });
+
+  await AsyncStorage.setItem('userData', userData);}
+   catch (error) {
+    console.log("problem saving accesstoken, try again later");
+  }
+
+
+
+ 
+
+}
+
+else{
+  setisloggedin(false);
+  setaccesstoken(null);
+  
+}
+
+}
 
 
    return (
@@ -37,19 +122,31 @@ const [password, setpassword] = useState('');
       style={styles.container}
     >
  
+
+
     <View style={{position:"absolute", top:85}}><Text style={styles.HeaderText}>Login to YouChat!</Text></View>
-   
+   {MessageVisible && route.params?.message && (
+          <Text style={{fontSize:16, color:"lime"}}>{route.params.message}</Text>
+        )}
     <View style={styles.LoginContainer}>
    <TextInput style={styles.Textinput_username} onChangeText={(text) => setusername(text)}  placeholder='Username'></TextInput>
    <TextInput secureTextEntry={true} style={styles.Textinput_password} onChangeText={(pass) => setpassword(pass)} placeholder='Password'></TextInput>
 
-<TouchableOpacity style={styles.Button} onPress={()=> Alert.alert("hello there " + password)}>
+
+{isloggedin ? <Text style={{fontSize:17, color:"lime"}}>{LoginResponseData.message}</Text>
+
+            :<Text style={{fontSize:17, color:"darkred"}}>{LoginResponseData.message}</Text>
+
+}
+
+
+<TouchableOpacity style={styles.Button} onPress={()=> handlelogin()}>
   <Text style={{textAlign:"center", fontSize:22,}}>Log in</Text>
 </TouchableOpacity>
 
    </View>
 
-   <View style={{ flexDirection: "row", alignItems: "center", marginTop:"75%",}}>
+   <View style={{ flexDirection: "row", alignItems: "center", marginTop:"84%",}}>
 <Text style={{fontSize:14}}>Don't have an account?</Text>
 <Button title="Register" onPress={() => navigation.navigate("Register Page")}></Button>
 </View>
@@ -64,7 +161,7 @@ const styles = StyleSheet.create({
       flex:1,
       resizeMode: 'cover',
       width:"100%",
-      height:800,
+      height:900,
       alignItems: 'center',
       justifyContent: 'center',
     },
