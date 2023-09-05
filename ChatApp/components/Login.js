@@ -99,10 +99,6 @@ try {
     console.log("problem saving accesstoken, try again later");
   }
 
-
-
- 
-
 }
 
 else{

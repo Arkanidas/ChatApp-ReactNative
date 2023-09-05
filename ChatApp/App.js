@@ -2,15 +2,14 @@ import { Button, Pressable, SafeAreaView, StyleSheet, Text, View,} from 'react-n
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
-import Settings from "./components/Settings";
-import Chat from "./components/Chat";
 import Register from "./components/Register";
 import Login from './components/Login';
-
-
+import 'react-native-gesture-handler';
+import Chat from './components/Chat';
 
 
 const Stack = createNativeStackNavigator();
+
 
 export default function App() {
   return (
@@ -24,6 +23,7 @@ export default function App() {
        
       </Stack.Navigator>
 
+
     </NavigationContainer>
 
 
@@ -33,13 +33,4 @@ export default function App() {
    
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'lightblue',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
 

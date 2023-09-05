@@ -2,9 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { SafeAreaView, StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import 'react-native-gesture-handler';
+import Drawer from './Drawer';
+import { NavigationContainer } from '@react-navigation/native';
+
+
 
 
 export default function Chat() {
+
 
   const [accesstoken, setAccesstoken] = useState(null);
   const [dataToken, setDataToken] = useState(null);
@@ -39,10 +45,12 @@ const MessageFetch =  "https://chat-api-with-auth.up.railway.app/messages";
     },
     });
     
+  
+
     const MessageData = await responseMessage.json();
     setinfo(MessageData);
     
-    
+  
 
     } catch(error){
       console.log("something went wrong, Please try again");
@@ -53,8 +61,8 @@ const MessageFetch =  "https://chat-api-with-auth.up.railway.app/messages";
      useEffect(() => {
 
      Fetchmessages();
-      
-    }, []);
+      console.log("fetch running")
+    },[userid]);
   
 
 
@@ -62,17 +70,17 @@ const MessageFetch =  "https://chat-api-with-auth.up.railway.app/messages";
 
   
     <SafeAreaView style={styles.container}>
-
+ 
 <FlatList
         data={info.data}
         keyExtractor={(item) => item._id} 
         renderItem={({ item }) => (
           <View style={styles.Message}>
-            <Text>{item.content}</Text>
-            <Text>{item.date}</Text>
+            <Text style={{fontSize:16}}>{item.content}</Text>
+            <Text style={{color:"gray", fontSize:10}}>{item.date}</Text>
           </View>
-        )}
-      />
+        )}/>
+
 
 
       <TextInput style={styles.textinput}placeholder='Enter your message...'></TextInput>
@@ -119,7 +127,8 @@ left:145,
     columnGap:10,
     marginRight:200,
     borderRadius:10,
-    marginTop:20,
+    marginTop:30,
+    backgroundColor:"lightblue"
   }
 
   });
