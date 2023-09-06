@@ -1,36 +1,27 @@
-import { Button, Pressable, SafeAreaView, StyleSheet, Text, View,} from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import * as React from 'react';
-import Register from "./components/Register";
-import Login from './components/Login';
 import 'react-native-gesture-handler';
-import Chat from './components/Chat';
-
-
-const Stack = createNativeStackNavigator();
+import { Button, Pressable, SafeAreaView, StyleSheet, Text,} from 'react-native';
+import * as React from 'react';
+import 'react-native-gesture-handler';
+import StackNavigator from './components/StackNav';
+import DrawerNav from './components/DrawerNav'
 
 
 export default function App() {
   return (
-  <>
-      <NavigationContainer>
+  <SafeAreaView style={styles.container}>
+  <StackNavigator/>
 
-      <Stack.Navigator>       
-      <Stack.Screen name="Login Page" component={Login} /> 
-      <Stack.Screen  name="You Chat" component={Chat} options={{title:"You Chat", headerBackVisible: false}} />
-      <Stack.Screen  name="Register Page" component={Register} />      
-       
-      </Stack.Navigator>
-
-
-    </NavigationContainer>
-
-
-
-
-</>
+  </SafeAreaView>
    
   );
 }
 
+const styles = StyleSheet.create({
+  container: {
+    flex:1,
+    resizeMode: 'cover',
+    height:1100,
+   
+  
+}
+},)

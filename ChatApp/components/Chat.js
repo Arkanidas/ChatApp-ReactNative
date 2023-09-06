@@ -1,24 +1,71 @@
 import React, { useEffect, useState } from 'react'
-import { SafeAreaView, StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity, Alert } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import 'react-native-gesture-handler';
-import Drawer from './Drawer';
-import { NavigationContainer } from '@react-navigation/native';
 
 
 
 
-export default function Chat() {
 
+export default function Chat({navigation}) {
+
+ 
 
   const [accesstoken, setAccesstoken] = useState(null);
   const [dataToken, setDataToken] = useState(null);
-  const [userid, setuserid] = useState(null);
+  const [UserId, setUserId] = useState(null);
   const [info, setinfo] = useState({data:[]});
+  const [messageinfo, setmessageinfo] = useState('');
+  const [meddelande, setmeddelande] = useState('');
+  const [PostSucceeded, setPostSucceeded] = useState(null);
+  const [sentMessages, setSentMessages] = useState([]);
+
+  
+const MessageFetch = "https://chat-api-with-auth.up.railway.app/messages";
 
 
-const MessageFetch =  "https://chat-api-with-auth.up.railway.app/messages";
+
+const PostMessage = async () =>{
+
+try{
+  const postmessage = await fetch(MessageFetch, {
+    method:'POST',
+
+    headers:{
+      'Content-Type':'application/json',
+      'Authorization': `Bearer ${accesstoken}`,
+    },
+
+    body: JSON.stringify({
+      content: meddelande,
+      user: UserId,
+      }),
+
+    });
+  
+    const PostData = await postmessage.json();
+    setmessageinfo(PostData);
+    
+   if(messageinfo.status === 201){
+    setPostSucceeded(true);
+    setmeddelande('');
+    setSentMessages((item) => [
+      ...item,
+      { content: meddelande, user: UserId, date: 'Now' },
+    ]);
+   }
+
+   else{
+    setPostSucceeded(false);
+   }
+}
+
+catch(error){
+  console.log("couldnt post message " + error)
+}
+}
+
 
 
   const Fetchmessages = async () => {
@@ -33,7 +80,7 @@ const MessageFetch =  "https://chat-api-with-auth.up.railway.app/messages";
         setAccesstoken(accessToken);
   
         const userid = parsedData.userId;
-        setuserid(userid);
+        setUserId(userid);
         
       }
 
@@ -45,13 +92,9 @@ const MessageFetch =  "https://chat-api-with-auth.up.railway.app/messages";
     },
     });
     
-  
-
     const MessageData = await responseMessage.json();
     setinfo(MessageData);
     
-  
-
     } catch(error){
       console.log("something went wrong, Please try again");
     }}
@@ -62,7 +105,7 @@ const MessageFetch =  "https://chat-api-with-auth.up.railway.app/messages";
 
      Fetchmessages();
       console.log("fetch running")
-    },[userid]);
+    },[UserId, meddelande]);
   
 
 
@@ -71,40 +114,50 @@ const MessageFetch =  "https://chat-api-with-auth.up.railway.app/messages";
   
     <SafeAreaView style={styles.container}>
  
+
 <FlatList
         data={info.data}
         keyExtractor={(item) => item._id} 
         renderItem={({ item }) => (
           <View style={styles.Message}>
+             {item.user && item.user.username ? (
+           <Text style={{ fontSize: 19 }}>{item.user.username}</Text>
+           ) : null}
+             <Text></Text>
             <Text style={{fontSize:16}}>{item.content}</Text>
             <Text style={{color:"gray", fontSize:10}}>{item.date}</Text>
           </View>
         )}/>
 
 
+       
+      <TextInput style={styles.textinput} onChangeText={(med) => setmeddelande(med)} placeholder='Enter your message...'></TextInput>
+      <TouchableOpacity onPress={() => PostMessage() }>
 
-      <TextInput style={styles.textinput}placeholder='Enter your message...'></TextInput>
-      <TouchableOpacity onPress={() =>Alert.alert("hello")}>
       <MaterialCommunityIcons style={styles.icon} name="send" size={43} color="blue" />
       </TouchableOpacity>
-      
+   
+
     </SafeAreaView>
   )
   }
   
 
+
+  
 const styles = StyleSheet.create({
     container: {
-      flex:1,
+        flex:1,
       backgroundColor: 'pink',
       alignItems: 'center',
       justifyContent: 'center',
+     
      
     },
   textinput:{
 
 position:"absolute",
-bottom:50,
+bottom:15,
 left:30,
 borderWidth:2,
 padding:15,
@@ -113,22 +166,33 @@ width:"70%",
 backgroundColor:"white",
   },
 
-  icon:{
-position:"relative",
+icon:{
+position:"absolute",
 bottom:20,
-left:145,
+left:130,
 
   },
 
   Message:{
-    borderWidth:2,
+    borderColor:"gray",
+    borderWidth:1,
+    width:"50%",
     padding:10,
-    width:170,
-    columnGap:10,
-    marginRight:200,
+    marginRight:140,
     borderRadius:10,
     marginTop:30,
-    backgroundColor:"lightblue"
-  }
+    backgroundColor:"lightblue",
+  },
 
+  Yourmessages:{
+    borderColor:"gray",
+    borderWidth:1,
+    width:"50%",
+    padding:10,
+    height:300,
+    width:'50%',
+    marginleft:140,
+    borderRadius:10,
+    backgroundColor:"lightgreen",
+  }
   });

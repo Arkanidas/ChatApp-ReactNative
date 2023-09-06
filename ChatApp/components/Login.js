@@ -3,7 +3,7 @@
  import { useFonts } from 'expo-font';
  import * as SplashScreen from 'expo-splash-screen';
  import AsyncStorage from '@react-native-async-storage/async-storage';
- import Chat from './Chat'
+
 
 
  SplashScreen.preventAutoHideAsync();
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
       flex:1,
       resizeMode: 'cover',
       width:"100%",
-      height:900,
+      height:800,
       alignItems: 'center',
       justifyContent: 'center',
     },

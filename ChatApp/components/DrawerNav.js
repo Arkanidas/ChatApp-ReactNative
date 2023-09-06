@@ -1,20 +1,23 @@
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import Settings from './Settings';
-import Chat from "./components/Chat";
-import App from '../App';
+import Chat from './Chat';
+
 
 const Drawer = createDrawerNavigator();
 
-export default function Drawer() {
+export default function DrawerNav() {
   return (
 
+<>
 
-    <Drawer.Navigator initialRouteName={Chat}>
+    <Drawer.Navigator>
        <Drawer.Screen name="You Chat" component={Chat} /> 
-      <Drawer.Screen name="Settings" component={Settings} />
-      
+       <Drawer.Screen name="Settings" component={Settings} /> 
+       
     </Drawer.Navigator>
-
+  
+    </>
 
   );
 }
+
