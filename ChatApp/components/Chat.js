@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { SafeAreaView, StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, TextInput, FlatList, TouchableOpacity,Alert } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import 'react-native-gesture-handler';
@@ -27,6 +27,7 @@ const MessageFetch = "https://chat-api-with-auth.up.railway.app/messages";
 
 
 const PostMessage = async () =>{
+  
 
 try{
   const postmessage = await fetch(MessageFetch, {
@@ -47,15 +48,10 @@ try{
     const PostData = await postmessage.json();
     setmessageinfo(PostData);
     
-   if(messageinfo.status === 201){
-    setPostSucceeded(true);
-    setmeddelande('');
-    setSentMessages((item) => [
-      ...item,
-      { content: meddelande, user: UserId, date: 'Now' },
-    ]);
-   }
-
+    if (PostData.status === 201) {
+      setPostSucceeded(true);
+       
+    }
    else{
     setPostSucceeded(false);
    }
@@ -105,6 +101,8 @@ catch(error){
 
      Fetchmessages();
       console.log("fetch running")
+  
+      
     },[UserId, meddelande]);
   
 
@@ -119,14 +117,23 @@ catch(error){
         data={info.data}
         keyExtractor={(item) => item._id} 
         renderItem={({ item }) => (
-          <View style={styles.Message}>
-             {item.user && item.user.username ? (
-           <Text style={{ fontSize: 19 }}>{item.user.username}</Text>
-           ) : null}
-             <Text></Text>
-            <Text style={{fontSize:16}}>{item.content}</Text>
-            <Text style={{color:"gray", fontSize:10}}>{item.date}</Text>
-          </View>
+
+          <View style={styles.container}>
+
+          <Text {...item.data === UserId ? styles.Yourmessages : styles.Message}>
+            
+          {item.user && item.user.username ? (
+            <Text style={{ fontSize: 19 }}>{item.user.username}</Text>
+          ) : null}
+          
+          <Text style={{ fontSize: 16 }}>{item.content}</Text>
+          <Text> </Text>
+          <Text style={{ color: "gray", fontSize: 10 }}>{item.date}</Text>
+          
+          </Text>
+        </View>                                
+  
+
         )}/>
 
 
@@ -174,11 +181,12 @@ left:130,
   },
 
   Message:{
+    flex:1,
     borderColor:"gray",
     borderWidth:1,
-    width:"50%",
+    justifyContent:"flex-start",
     padding:10,
-    marginRight:140,
+    marginRight:200,
     borderRadius:10,
     marginTop:30,
     backgroundColor:"lightblue",
@@ -186,13 +194,12 @@ left:130,
 
   Yourmessages:{
     borderColor:"gray",
+    flex:1,
+    justifyContent:"flex-end",
     borderWidth:1,
-    width:"50%",
     padding:10,
-    height:300,
-    width:'50%',
-    marginleft:140,
     borderRadius:10,
+    marginLeft:200,
     backgroundColor:"lightgreen",
   }
   });

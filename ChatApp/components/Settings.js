@@ -1,10 +1,10 @@
 import React from 'react'
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, Button } from 'react-native';
 
 export default function Settings() {
   return (
     <View style={styles.container}>
-      <Text>Here we fucking go again Setting</Text>
+      <Button title="Log Out"></Button>
 
     </View>
   )
@@ -13,6 +13,7 @@ export default function Settings() {
 
 const styles = StyleSheet.create({
     container: {  
+      flex:1,
       backgroundColor: 'lightblue',
       alignItems: 'center',
       justifyContent: 'center',

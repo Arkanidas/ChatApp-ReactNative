@@ -11,7 +11,7 @@ export default function DrawerNav() {
 <>
 
     <Drawer.Navigator>
-       <Drawer.Screen name="You Chat" component={Chat} /> 
+       <Drawer.Screen name="Chat" component={Chat} /> 
        <Drawer.Screen name="Settings" component={Settings} /> 
        
     </Drawer.Navigator>
