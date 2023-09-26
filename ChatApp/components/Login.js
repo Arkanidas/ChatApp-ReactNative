@@ -78,15 +78,17 @@ const fetchDataLogin = async () => {
   }
 
   
-const handlelogin = async () =>{
+const handlelogin = async () => {
   fetchDataLogin();
 
 if(LoginResponseData.data && LoginResponseData.data.accessToken){
   setisloggedin(true);
   setaccesstoken(LoginResponseData.data.accessToken);
-  setuserid(LoginResponseData.data._id)
+  setuserid(LoginResponseData.data._id);
+  setusername('');
+  setpassword('');
   navigation.navigate('You Chat');
-
+ 
 
 try {
   const userData = JSON.stringify({
@@ -95,6 +97,7 @@ try {
   });
 
   await AsyncStorage.setItem('userData', userData);}
+  
    catch (error) {
     console.log("problem saving accesstoken, try again later");
   }
